@@ -36,7 +36,9 @@ Traefik 版本：v2.2
 
 ![npm registry](https://aericio.oss-cn-beijing.aliyuncs.com/images/blog/private-npm.jpg)
 
-大概流程就是用户 install 后向私有 npm 发起请求，服务器会先查询所请求的这个模块是否是私有模块或已经缓存过的公共模块，如果是则直接返回给用户；如果请求的是一个还没有被缓存的公共模块，那么则会向上游源请求模块并进行缓存后返回给用户。上游的源可以是 npm 官方仓库:<https://registry.npmjs.org/>，速度奇慢，也可以是淘宝镜像:<https://registry.npm.taobao.org>，速度快。
+大概流程就是用户 install 后向私有 npm 发起请求，服务器会先查询所请求的这个模块是否是私有模块或已经缓存过的公共模块，如果是则直接返回给用户；如果请求的是一个还没有被缓存的公共模块，那么则会向上游源请求模块并进行缓存后返回给用户。
+
+上游的源可以是 官方仓库:<https://registry.npmjs.org/>，速度奇慢，也可以是淘宝镜像:<https://registry.npm.taobao.org>，速度快。
 
 ### 准备部署配置文件
 
