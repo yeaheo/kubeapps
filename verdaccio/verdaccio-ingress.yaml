@@ -1,0 +1,15 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: verdaccio-ui
+  labels:
+    app: verdaccio
+spec:
+  entryPoints:
+    - web
+  routes:
+    - match: Host(`registry.npm.devops.io`)
+      kind: Rule
+      services:
+        - name: npm-verdaccio
+          port: 4873
