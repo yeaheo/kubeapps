@@ -97,7 +97,7 @@ $ kubectl apply -f verdaccio-cm.yaml --namespace devops
 
 #### Verdaccio deployment 文件
 
-准备 deployment 文件，这里我用 `nodeName` 属性将其固定了一台机器上，并且存储用的 `hostPath` 方式，如下:
+准备 deployment 文件，这里我用 `nodeName` 属性将其固定了一台机器上，也可以选择其他调度策略，并且存储用的 `hostPath` 方式，如下:
 
 ```yaml
 # source verdaccio-deploy.yaml
@@ -164,6 +164,23 @@ spec:
 
 ```bash
 $ kubectl apply -f verdaccio-deploy.yaml --namespace devops
+```
+
+> 固定节点的方式和持久化存储的方式有很多种，根据自己情况选择即可
+
+还有一个特别需要注意的是：
+
+> 官方的镜像默认使用的是 verdaccio 用户启动服务的，如果我们不修改宿主机目录权限会报权限问题
+
+修改宿主机目录权限：
+
+```bash
+## 创建目录
+$ mkdir -pv /mnt/data/data
+## 创建验证文件
+$ touch /mnt/data/htpasswd
+## 修改权限
+$ chown -R 100:101 /mnt/data/
 ```
 
 #### Verdaccio Service 文件
@@ -248,3 +265,37 @@ replicaset.apps/npm-verdaccio-c55db58f6       0         0         0       24h
 
 ### 测试仓库可用性
 
+#### 设置仓库源
+
+这里我随便用的域名 `registry.npm.devops.io` ，一般没有问题的话可以直接用浏览器访问的（需要手动添加解析），为了测试方便，需要将 npm 的默认源设置为 `http://registry.npm.devops.io`:
+
+```bash
+$ npm set registry http://registry.npm.devops.io
+```
+
+#### 添加用户/登录
+
+我们需要创建个用户方便上传私有包：
+
+```bash
+$ npm adduser --registry http://registry.npm.devops.io
+```
+
+> 需要输入用户名、密码、邮箱
+
+#### 上传私有包
+
+创建用户并登录成功后，接下来就可以创建并上传私有包了，具体步骤如下：
+
+```bash
+## 准备 nodejs 项目
+$ mkdir npmtest
+$ cd npmtest && touch index.js
+$ npm init
+
+## 上传私有包
+$ npm adduser --registry http://registry.npm.devops.io
+$ npm publish --registry http://registry.npm.devops.io
+```
+
+如果遇到报错可以根据 pod 的日志排错，一般都是因为权限问题。
