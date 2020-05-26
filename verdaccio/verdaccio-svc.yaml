@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: npm-verdaccio
+  labels:
+    app: verdaccio
+spec:
+  ports:
+    - port: 4873
+      targetPort: http
+      protocol: TCP
+      name: 
+  selector:
+    app: verdaccio
+  type: ClusterIP

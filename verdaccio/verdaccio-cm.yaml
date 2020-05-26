@@ -1,0 +1,37 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: npm-verdaccio
+  labels:
+    app: verdaccio
+data:
+  config.yaml: |-
+    storage: /verdaccio/storage/data
+    web:
+      enable: true
+      title: Npm Registry
+      logo: https://aericio.oss-cn-beijing.aliyuncs.com/images/other/logo-blue.png
+      primary_color: "#590a7a"
+      gravatar: true
+    auth:
+      htpasswd:
+        file: /verdaccio/storage/htpasswd
+        max_users: 1000
+    uplinks:
+      npmjs:
+        url: https://registry.npm.taobao.org/
+    packages:
+      '@*/*':
+        access: $all
+        publish: $authenticated
+        proxy: npmjs
+    
+      '**':
+        access: $all
+        publish: $authenticated
+        proxy: npmjs
+    middlewares:
+      audit:
+        enabled: true
+    logs:
+      - {type: stdout, format: pretty, level: http}

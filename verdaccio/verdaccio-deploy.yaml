@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: verdaccio
+  name: npm-verdaccio
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: verdaccio
+  strategy:
+    type: Recreate
+    rollingUpdate: null
+  template:
+    metadata:
+      labels:
+        app: verdaccio
+    spec:
+      nodeName: 172.30.1.22
+      securityContext:
+        runAsUser: 100
+        runAsGroup: 101
+      containers:
+        - name: verdaccio
+          image: "verdaccio/verdaccio:latest"
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 4873
+              name: http
+          livenessProbe:
+            httpGet:
+              path: /-/ping
+              port: http
+            initialDelaySeconds: 5
+          readinessProbe:
+            httpGet:
+              path: /-/ping
+              port: http
+            initialDelaySeconds: 5
+          resources:
+            {}
+          volumeMounts:
+            - mountPath: /verdaccio/storage
+              name: storage
+              readOnly: false
+            - mountPath: /verdaccio/conf
+              name: config
+              readOnly: true
+      volumes:
+      - name: config
+        configMap:
+          name: npm-verdaccio
+      - name: storage
+        hostPath:
+          path: /mnt/data
+          type: DirectoryOrCreate
