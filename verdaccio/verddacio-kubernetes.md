@@ -62,8 +62,6 @@ data:
     web:
       enable: true
       title: Npm Registry
-      logo: https://aericio.oss-cn-beijing.aliyuncs.com/images/other/logo-blue.png
-      primary_color: "#590a7a"
       gravatar: true
     auth:
       htpasswd:
