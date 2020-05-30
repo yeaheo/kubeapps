@@ -17,7 +17,7 @@
 
 为了更符合 Kubernetes 应用的特点，我是在 Kubernetes 集群里部署 Verddacio，然后最外层用的是 Traefik 2.0 版本暴露对应服务，具体环境如下说明：
 
-```yaml
+```yml
 Kubernetes 集群版本: v1.16.9
 Verddacio 版本：v4.6.2
 Traefik 版本：v2.2
